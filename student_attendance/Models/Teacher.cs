@@ -34,7 +34,7 @@ namespace student_attendance.Models
         public DateTime dob { get; set; }
                 
         [Required]
-        public int user_id { get; set; }
+        public int? user_id { get; set; }
 
         
         [ForeignKey("user_id")]

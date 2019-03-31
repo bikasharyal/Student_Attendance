@@ -14,8 +14,13 @@ namespace student_attendance.Models
         public int module_id { get; set; }
 
         [Required]
+        [DisplayName("Module Code")]
+        //[Index("unique_module_code", IsUnique = true)]
+        public string module_code { get; set; }
+
+        [Required]
         [DisplayName("Module Name")]
-        [Index("unique_module_name", IsUnique = true)]
+        //[Index("unique_module_name", IsUnique = true)]
         public string module_name { get; set; }
 
         [Required]

@@ -15,7 +15,7 @@ namespace student_attendance.Models
 
         [Required]
         [DisplayName("Username")]
-        [Index("unique_username_name", IsUnique = true)]
+        //[Index("unique_username_name", IsUnique = true)]
         public string user_name { get; set; }
 
         [Required]

@@ -15,7 +15,7 @@ namespace student_attendance.Models
 
         [Required]
         [DisplayName("Course Name")]
-        [Index("unique_course_name", IsUnique = true)]
+        //[Index("unique_course_name", IsUnique = true)]
         public string course_name { get; set; }
 
         [Required]

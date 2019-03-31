@@ -31,7 +31,7 @@ namespace student_attendance.Models
         [Required]
         public int schedule_id { get; set; }
 
-        [ForeignKey("student__id")]
+        [ForeignKey("student_id")]
         public virtual Student student_id_fk { get; set; }
 
         [ForeignKey("schedule_id")]

@@ -37,14 +37,14 @@ namespace student_attendance.Models
         [DisplayName("Enrolled Date")]
         public DateTime enrolled_date { get; set; }
 
-        [Required]
-        public int user_id { get; set; }
+        //[Required]
+        public int? user_id { get; set; }
 
-        [Required]
-        public int course_id { get; set; }
+        //[Required]
+        public int? course_id { get; set; }
 
-        [Required]
-        public int group_id { get; set; }
+        //[Required]
+        public int? group_id { get; set; }
 
 
         [ForeignKey("user_id")]

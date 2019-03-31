@@ -17,6 +17,5 @@ namespace student_attendance.Models
         public DbSet<Group> Groups { get; set; }
         public DbSet<Teacher_Module> Teacher_Modules { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
-
     }
 }
