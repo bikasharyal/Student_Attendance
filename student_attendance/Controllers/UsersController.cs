@@ -78,18 +78,15 @@ namespace student_attendance.Controllers
         public ActionResult Login([Bind(Include = "user_id,user_name,password,type")] User user)
         {
             // if (ModelState.IsValid)            {
-            //db.Users.Add(user);
-            //db.SaveChanges();
-            // return RedirectToAction("Index","Courses");                
+                           
             // }          
-
-                        
+            
             bool isValid = db.Users.Any(x => x.user_name == user.user_name && x.password == user.password);
             if (isValid)
             {
                 
                 FormsAuthentication.SetAuthCookie(user.user_name, false);
-                return RedirectToAction("Index", "Courses");
+                return RedirectToAction("Index", "Home");
                 // user.user_name
             }
             ModelState.AddModelError("", "Username or Password is Invalid!");

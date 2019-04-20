@@ -180,6 +180,7 @@
     <Compile Include="Models\Teacher_Module.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserAllRole.cs" />
+    <Compile Include="OurRoleProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
