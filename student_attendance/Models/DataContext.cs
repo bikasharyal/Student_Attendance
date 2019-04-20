@@ -17,5 +17,13 @@ namespace student_attendance.Models
         public DbSet<Group> Groups { get; set; }
         public DbSet<Teacher_Module> Teacher_Modules { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
+        
+        public DbSet<AllRole> AllRoles { get; set; }
+        public DbSet<UserAllRole> UserAllRoles { get; set; }
+
+
+        //public System.Data.Entity.DbSet<student_attendance.Models.Role> Roles { get; set; }
+        
     }
+
 }

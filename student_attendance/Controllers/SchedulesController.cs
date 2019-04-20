@@ -10,108 +10,116 @@ using student_attendance.Models;
 
 namespace student_attendance.Controllers
 {
-    
-    public class CoursesController : Controller
+    public class SchedulesController : Controller
     {
         private DataContext db = new DataContext();
 
-        // GET: Courses
+        // GET: Schedules
         public ActionResult Index()
         {
-            return View(db.Courses.ToList());
+            var schedules = db.Schedules.Include(s => s.course_id_fk).Include(s => s.module_id_fk);
+            return View(schedules.ToList());
         }
 
-        // GET: Courses/Details/5
+        // GET: Schedules/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            Schedule schedule = db.Schedules.Find(id);
+            if (schedule == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(schedule);
         }
 
-        // GET: Courses/Create
+        // GET: Schedules/Create
         public ActionResult Create()
         {
+            ViewBag.group_id = new SelectList(db.Groups, "group_id", "name");
+            ViewBag.module_id = new SelectList(db.Modules, "module_id", "module_code");
             return View();
         }
 
-        // POST: Courses/Create
+        // POST: Schedules/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "course_id,course_name,no_of_semester")] Course course)
+        public ActionResult Create([Bind(Include = "schedule_id,start_time,end_time,day,room,class_type,group_id,module_id")] Schedule schedule)
         {
             if (ModelState.IsValid)
             {
-                db.Courses.Add(course);
+                db.Schedules.Add(schedule);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(course);
+            ViewBag.group_id = new SelectList(db.Groups, "group_id", "name", schedule.group_id);
+            ViewBag.module_id = new SelectList(db.Modules, "module_id", "module_code", schedule.module_id);
+            return View(schedule);
         }
 
-        // GET: Courses/Edit/5
+        // GET: Schedules/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            Schedule schedule = db.Schedules.Find(id);
+            if (schedule == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            ViewBag.group_id = new SelectList(db.Groups, "group_id", "name", schedule.group_id);
+            ViewBag.module_id = new SelectList(db.Modules, "module_id", "module_code", schedule.module_id);
+            return View(schedule);
         }
 
-        // POST: Courses/Edit/5
+        // POST: Schedules/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "course_id,course_name,no_of_semester")] Course course)
+        public ActionResult Edit([Bind(Include = "schedule_id,start_time,end_time,day,room,class_type,group_id,module_id")] Schedule schedule)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(course).State = EntityState.Modified;
+                db.Entry(schedule).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(course);
+            ViewBag.group_id = new SelectList(db.Groups, "group_id", "name", schedule.group_id);
+            ViewBag.module_id = new SelectList(db.Modules, "module_id", "module_code", schedule.module_id);
+            return View(schedule);
         }
 
-        // GET: Courses/Delete/5
+        // GET: Schedules/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            Schedule schedule = db.Schedules.Find(id);
+            if (schedule == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(schedule);
         }
 
-        // POST: Courses/Delete/5
+        // POST: Schedules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Course course = db.Courses.Find(id);
-            db.Courses.Remove(course);
+            Schedule schedule = db.Schedules.Find(id);
+            db.Schedules.Remove(schedule);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

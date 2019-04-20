@@ -23,8 +23,25 @@
                     <li>@Html.ActionLink("Home", "Index", "Home")</li>
                     <li>@Html.ActionLink("About", "About", "Home")</li>
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Course", "Index", "Courses")</li>                                      
                 </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li> <a href="#">Hello - @User.Identity.Name</a></li>
+                        <li>@Html.ActionLink("Logout", "Logout", "Users")</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Login", "Login", "Users")</li>
+                    }
+
+                </ul>
+
             </div>
+
         </div>
     </div>
     <div class="container body-content">

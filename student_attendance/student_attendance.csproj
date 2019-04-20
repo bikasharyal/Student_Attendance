@@ -132,11 +132,43 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AllRolesController.cs" />
+    <Compile Include="Controllers\AttendancesController.cs" />
     <Compile Include="Controllers\CoursesController.cs" />
+    <Compile Include="Controllers\GroupsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ModulesController.cs" />
+    <Compile Include="Controllers\SchedulesController.cs" />
+    <Compile Include="Controllers\StudentsController.cs" />
+    <Compile Include="Controllers\TeachersController.cs" />
+    <Compile Include="Controllers\Teacher_ModuleController.cs" />
+    <Compile Include="Controllers\UserAllRolesController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903310948106_InitialCreate.cs" />
+    <Compile Include="Migrations\201903310948106_InitialCreate.Designer.cs">
+      <DependentUpon>201903310948106_InitialCreate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904200848597_UserRoles_and_authentications.cs" />
+    <Compile Include="Migrations\201904200848597_UserRoles_and_authentications.Designer.cs">
+      <DependentUpon>201904200848597_UserRoles_and_authentications.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904201611043_AllRole_added.cs" />
+    <Compile Include="Migrations\201904201611043_AllRole_added.Designer.cs">
+      <DependentUpon>201904201611043_AllRole_added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904201619282_UserAllRole_added.cs" />
+    <Compile Include="Migrations\201904201619282_UserAllRole_added.Designer.cs">
+      <DependentUpon>201904201619282_UserAllRole_added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201904201626150_Role_and_User_Role_Modules_deleted.cs" />
+    <Compile Include="Migrations\201904201626150_Role_and_User_Role_Modules_deleted.Designer.cs">
+      <DependentUpon>201904201626150_Role_and_User_Role_Modules_deleted.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\AllRole.cs" />
     <Compile Include="Models\Attendance.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\DataContext.cs" />
@@ -147,6 +179,7 @@
     <Compile Include="Models\Teacher.cs" />
     <Compile Include="Models\Teacher_Module.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserAllRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -171,7 +204,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -190,6 +225,57 @@
     <Content Include="Views\Courses\Details.cshtml" />
     <Content Include="Views\Courses\Edit.cshtml" />
     <Content Include="Views\Courses\Index.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\Delete.cshtml" />
+    <Content Include="Views\Users\Details.cshtml" />
+    <Content Include="Views\Users\Edit.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Groups\Create.cshtml" />
+    <Content Include="Views\Groups\Delete.cshtml" />
+    <Content Include="Views\Groups\Details.cshtml" />
+    <Content Include="Views\Groups\Edit.cshtml" />
+    <Content Include="Views\Groups\Index.cshtml" />
+    <Content Include="Views\Modules\Create.cshtml" />
+    <Content Include="Views\Modules\Delete.cshtml" />
+    <Content Include="Views\Modules\Details.cshtml" />
+    <Content Include="Views\Modules\Edit.cshtml" />
+    <Content Include="Views\Modules\Index.cshtml" />
+    <Content Include="Views\Schedules\Create.cshtml" />
+    <Content Include="Views\Schedules\Delete.cshtml" />
+    <Content Include="Views\Schedules\Details.cshtml" />
+    <Content Include="Views\Schedules\Edit.cshtml" />
+    <Content Include="Views\Schedules\Index.cshtml" />
+    <Content Include="Views\Students\Create.cshtml" />
+    <Content Include="Views\Students\Delete.cshtml" />
+    <Content Include="Views\Students\Details.cshtml" />
+    <Content Include="Views\Students\Edit.cshtml" />
+    <Content Include="Views\Students\Index.cshtml" />
+    <Content Include="Views\Teachers\Create.cshtml" />
+    <Content Include="Views\Teachers\Delete.cshtml" />
+    <Content Include="Views\Teachers\Details.cshtml" />
+    <Content Include="Views\Teachers\Edit.cshtml" />
+    <Content Include="Views\Teachers\Index.cshtml" />
+    <Content Include="Views\Teacher_Module\Create.cshtml" />
+    <Content Include="Views\Teacher_Module\Delete.cshtml" />
+    <Content Include="Views\Teacher_Module\Details.cshtml" />
+    <Content Include="Views\Teacher_Module\Edit.cshtml" />
+    <Content Include="Views\Teacher_Module\Index.cshtml" />
+    <Content Include="Views\Attendances\Create.cshtml" />
+    <Content Include="Views\Attendances\Delete.cshtml" />
+    <Content Include="Views\Attendances\Details.cshtml" />
+    <Content Include="Views\Attendances\Edit.cshtml" />
+    <Content Include="Views\Attendances\Index.cshtml" />
+    <Content Include="Views\Users\Login.cshtml" />
+    <Content Include="Views\AllRoles\Create.cshtml" />
+    <Content Include="Views\AllRoles\Delete.cshtml" />
+    <Content Include="Views\AllRoles\Details.cshtml" />
+    <Content Include="Views\AllRoles\Edit.cshtml" />
+    <Content Include="Views\AllRoles\Index.cshtml" />
+    <Content Include="Views\UserAllRoles\Create.cshtml" />
+    <Content Include="Views\UserAllRoles\Delete.cshtml" />
+    <Content Include="Views\UserAllRoles\Details.cshtml" />
+    <Content Include="Views\UserAllRoles\Edit.cshtml" />
+    <Content Include="Views\UserAllRoles\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -206,6 +292,23 @@
     <None Include="packages.config" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201903310948106_InitialCreate.resx">
+      <DependentUpon>201903310948106_InitialCreate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904200848597_UserRoles_and_authentications.resx">
+      <DependentUpon>201904200848597_UserRoles_and_authentications.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904201611043_AllRole_added.resx">
+      <DependentUpon>201904201611043_AllRole_added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904201619282_UserAllRole_added.resx">
+      <DependentUpon>201904201619282_UserAllRole_added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904201626150_Role_and_User_Role_Modules_deleted.resx">
+      <DependentUpon>201904201626150_Role_and_User_Role_Modules_deleted.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

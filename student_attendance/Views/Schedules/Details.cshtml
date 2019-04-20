@@ -1,0 +1,74 @@
+﻿@model student_attendance.Models.Schedule
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Schedule</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.course_id_fk.name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.course_id_fk.name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.module_id_fk.module_code)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.module_id_fk.module_code)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.start_time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.start_time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.end_time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.end_time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.day)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.day)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.room)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.room)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.class_type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.class_type)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.schedule_id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

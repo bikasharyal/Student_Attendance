@@ -10,108 +10,116 @@ using student_attendance.Models;
 
 namespace student_attendance.Controllers
 {
-    
-    public class CoursesController : Controller
+    public class UserAllRolesController : Controller
     {
         private DataContext db = new DataContext();
 
-        // GET: Courses
+        // GET: UserAllRoles
         public ActionResult Index()
         {
-            return View(db.Courses.ToList());
+            var userAllRoles = db.UserAllRoles.Include(u => u.role_id_fk).Include(u => u.user_id_fk);
+            return View(userAllRoles.ToList());
         }
 
-        // GET: Courses/Details/5
+        // GET: UserAllRoles/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            UserAllRole userAllRole = db.UserAllRoles.Find(id);
+            if (userAllRole == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(userAllRole);
         }
 
-        // GET: Courses/Create
+        // GET: UserAllRoles/Create
         public ActionResult Create()
         {
+            ViewBag.role_id = new SelectList(db.AllRoles, "role_id", "role");
+            ViewBag.user_id = new SelectList(db.Users, "user_id", "user_name");
             return View();
         }
 
-        // POST: Courses/Create
+        // POST: UserAllRoles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "course_id,course_name,no_of_semester")] Course course)
+        public ActionResult Create([Bind(Include = "user_role_id,user_id,role_id")] UserAllRole userAllRole)
         {
             if (ModelState.IsValid)
             {
-                db.Courses.Add(course);
+                db.UserAllRoles.Add(userAllRole);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(course);
+            ViewBag.role_id = new SelectList(db.AllRoles, "role_id", "role", userAllRole.role_id);
+            ViewBag.user_id = new SelectList(db.Users, "user_id", "user_name", userAllRole.user_id);
+            return View(userAllRole);
         }
 
-        // GET: Courses/Edit/5
+        // GET: UserAllRoles/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            UserAllRole userAllRole = db.UserAllRoles.Find(id);
+            if (userAllRole == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            ViewBag.role_id = new SelectList(db.AllRoles, "role_id", "role", userAllRole.role_id);
+            ViewBag.user_id = new SelectList(db.Users, "user_id", "user_name", userAllRole.user_id);
+            return View(userAllRole);
         }
 
-        // POST: Courses/Edit/5
+        // POST: UserAllRoles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "course_id,course_name,no_of_semester")] Course course)
+        public ActionResult Edit([Bind(Include = "user_role_id,user_id,role_id")] UserAllRole userAllRole)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(course).State = EntityState.Modified;
+                db.Entry(userAllRole).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(course);
+            ViewBag.role_id = new SelectList(db.AllRoles, "role_id", "role", userAllRole.role_id);
+            ViewBag.user_id = new SelectList(db.Users, "user_id", "user_name", userAllRole.user_id);
+            return View(userAllRole);
         }
 
-        // GET: Courses/Delete/5
+        // GET: UserAllRoles/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            UserAllRole userAllRole = db.UserAllRoles.Find(id);
+            if (userAllRole == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(userAllRole);
         }
 
-        // POST: Courses/Delete/5
+        // POST: UserAllRoles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Course course = db.Courses.Find(id);
-            db.Courses.Remove(course);
+            UserAllRole userAllRole = db.UserAllRoles.Find(id);
+            db.UserAllRoles.Remove(userAllRole);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

@@ -10,108 +10,107 @@ using student_attendance.Models;
 
 namespace student_attendance.Controllers
 {
-    
-    public class CoursesController : Controller
+    public class AllRolesController : Controller
     {
         private DataContext db = new DataContext();
 
-        // GET: Courses
+        // GET: AllRoles
         public ActionResult Index()
         {
-            return View(db.Courses.ToList());
+            return View(db.AllRoles.ToList());
         }
 
-        // GET: Courses/Details/5
+        // GET: AllRoles/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            AllRole allRole = db.AllRoles.Find(id);
+            if (allRole == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(allRole);
         }
 
-        // GET: Courses/Create
+        // GET: AllRoles/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Courses/Create
+        // POST: AllRoles/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "course_id,course_name,no_of_semester")] Course course)
+        public ActionResult Create([Bind(Include = "role_id,role")] AllRole allRole)
         {
             if (ModelState.IsValid)
             {
-                db.Courses.Add(course);
+                db.AllRoles.Add(allRole);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(course);
+            return View(allRole);
         }
 
-        // GET: Courses/Edit/5
+        // GET: AllRoles/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            AllRole allRole = db.AllRoles.Find(id);
+            if (allRole == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(allRole);
         }
 
-        // POST: Courses/Edit/5
+        // POST: AllRoles/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "course_id,course_name,no_of_semester")] Course course)
+        public ActionResult Edit([Bind(Include = "role_id,role")] AllRole allRole)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(course).State = EntityState.Modified;
+                db.Entry(allRole).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(course);
+            return View(allRole);
         }
 
-        // GET: Courses/Delete/5
+        // GET: AllRoles/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            AllRole allRole = db.AllRoles.Find(id);
+            if (allRole == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(allRole);
         }
 
-        // POST: Courses/Delete/5
+        // POST: AllRoles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Course course = db.Courses.Find(id);
-            db.Courses.Remove(course);
+            AllRole allRole = db.AllRoles.Find(id);
+            db.AllRoles.Remove(allRole);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

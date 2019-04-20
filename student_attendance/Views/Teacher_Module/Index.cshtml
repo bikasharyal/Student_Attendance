@@ -1,0 +1,45 @@
+﻿@model IEnumerable<student_attendance.Models.Teacher_Module>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.module_id_fk.module_code)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.teacher_id_fk.name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.teacher_type)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.module_id_fk.module_code)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.teacher_id_fk.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.teacher_type)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.id })
+        </td>
+    </tr>
+}
+
+</table>

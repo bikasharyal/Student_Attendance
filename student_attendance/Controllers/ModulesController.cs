@@ -10,108 +10,112 @@ using student_attendance.Models;
 
 namespace student_attendance.Controllers
 {
-    
-    public class CoursesController : Controller
+    public class ModulesController : Controller
     {
         private DataContext db = new DataContext();
 
-        // GET: Courses
+        // GET: Modules
         public ActionResult Index()
         {
-            return View(db.Courses.ToList());
+            var modules = db.Modules.Include(m => m.course_id_fk);
+            return View(modules.ToList());
         }
 
-        // GET: Courses/Details/5
+        // GET: Modules/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            Module module = db.Modules.Find(id);
+            if (module == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(module);
         }
 
-        // GET: Courses/Create
+        // GET: Modules/Create
         public ActionResult Create()
         {
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "course_name");
             return View();
         }
 
-        // POST: Courses/Create
+        // POST: Modules/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "course_id,course_name,no_of_semester")] Course course)
+        public ActionResult Create([Bind(Include = "module_id,module_code,module_name,credit_hour,semester,course_id")] Module module)
         {
             if (ModelState.IsValid)
             {
-                db.Courses.Add(course);
+                db.Modules.Add(module);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(course);
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "course_name", module.course_id);
+            return View(module);
         }
 
-        // GET: Courses/Edit/5
+        // GET: Modules/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            Module module = db.Modules.Find(id);
+            if (module == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "course_name", module.course_id);
+            return View(module);
         }
 
-        // POST: Courses/Edit/5
+        // POST: Modules/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "course_id,course_name,no_of_semester")] Course course)
+        public ActionResult Edit([Bind(Include = "module_id,module_code,module_name,credit_hour,semester,course_id")] Module module)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(course).State = EntityState.Modified;
+                db.Entry(module).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(course);
+            ViewBag.course_id = new SelectList(db.Courses, "course_id", "course_name", module.course_id);
+            return View(module);
         }
 
-        // GET: Courses/Delete/5
+        // GET: Modules/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Course course = db.Courses.Find(id);
-            if (course == null)
+            Module module = db.Modules.Find(id);
+            if (module == null)
             {
                 return HttpNotFound();
             }
-            return View(course);
+            return View(module);
         }
 
-        // POST: Courses/Delete/5
+        // POST: Modules/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Course course = db.Courses.Find(id);
-            db.Courses.Remove(course);
+            Module module = db.Modules.Find(id);
+            db.Modules.Remove(module);
             db.SaveChanges();
             return RedirectToAction("Index");
         }
