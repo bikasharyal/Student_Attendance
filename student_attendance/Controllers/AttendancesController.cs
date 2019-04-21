@@ -10,6 +10,7 @@ using student_attendance.Models;
 
 namespace student_attendance.Controllers
 {
+    
     public class AttendancesController : Controller
     {
         private DataContext db = new DataContext();
@@ -41,6 +42,13 @@ namespace student_attendance.Controllers
         {
             ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day");
             ViewBag.student_id = new SelectList(db.Students, "student_id", "name");
+            var rows = db.Students.SqlQuery("SELECT * from students").ToList().ToArray();
+
+            foreach(var a in rows)
+            {
+                Response.Write(a.name);
+            }
+
             return View();
         }
 
@@ -51,6 +59,8 @@ namespace student_attendance.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "attendance_id,date,entry_time,status,student_id,schedule_id")] Attendance attendance)
         {
+            attendance.status = "P";
+
             if (ModelState.IsValid)
             {
                 db.Attendances.Add(attendance);
