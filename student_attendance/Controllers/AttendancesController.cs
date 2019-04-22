@@ -19,6 +19,14 @@ namespace student_attendance.Controllers
         public ActionResult Index()
         {
             var attendances = db.Attendances.Include(a => a.schedule_id_fk).Include(a => a.student_id_fk);
+            //ViewBag.schedules = db.Schedules.SqlQuery("SELECT * from schedules INNER JOIN groups ON groups.group_id = schedules.group_id").ToList();
+            ViewBag.schedules = db.Schedules.SqlQuery("SELECT * from schedules").ToList();
+            ViewBag.groups = db.Groups.SqlQuery("SELECT * from groups").ToList();
+            ViewBag.modules = db.Modules.SqlQuery("SELECT * from modules").ToList();
+            /*ViewBag.schedules = (from schedules in db.Schedules
+                                 join groups in db.Groups on schedules.group_id equals groups.group_id
+                                 join modules in db.Modules on schedules.module_id equals modules.module_id
+                                 select groups.name).ToList().ToArray();*/
             return View(attendances.ToList());
         }
 
@@ -40,16 +48,26 @@ namespace student_attendance.Controllers
         // GET: Attendances/Create
         public ActionResult Create()
         {
-            ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day");
-            ViewBag.student_id = new SelectList(db.Students, "student_id", "name");
-            var rows = db.Students.SqlQuery("SELECT * from students").ToList().ToArray();
-
-            foreach(var a in rows)
+            if (Request.QueryString["schedule_id"] != null)
             {
-                Response.Write(a.name);
-            }
+                ViewBag.get_schedule_id = Request.QueryString["schedule_id"];
+                ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day");
+                ViewBag.student_id = new SelectList(db.Students, "student_id", "name");
+                var rows = db.Students.SqlQuery("SELECT * from students").ToList().ToArray();
+                ViewBag.rows = rows;
 
-            return View();
+                /*foreach(var a in rows)
+                {
+                    Response.Write(a.name);
+                }*/
+
+                return View();
+            }
+            else
+            {
+                Response.Write("Missing Schedule Id.....Redirecting Back..<script>setTimeout(function(){location.href='/Attendances'}, 1000);</script>");
+                return null;
+            }
         }
 
         // POST: Attendances/Create
@@ -59,7 +77,25 @@ namespace student_attendance.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "attendance_id,date,entry_time,status,student_id,schedule_id")] Attendance attendance)
         {
-            attendance.status = "P";
+            Response.Write("date " + attendance.date + "<br/>");
+            Response.Write("entry_time " + attendance.entry_time + "<br/>");
+            Response.Write("status (array)" + attendance.status + "<br/>");
+            Response.Write("student_id (array)" + attendance.student_id + "<br/>");
+            Response.Write("schedule_id" + attendance.schedule_id + "<br/>");
+
+            Response.Write(attendance.student_id.GetType());
+            /*String[] allStatus = Request.Form.GetValues("status");
+            String[] allStudentId = Request.Form.GetValues("student_id");
+
+            int i = 0;
+            foreach(string status in allStatus)
+            {
+                Response.Write("Status: " + status + " - of: " + allStudentId[i] + "<br/>");
+                i++;
+            }*/
+            
+
+            return null;
 
             if (ModelState.IsValid)
             {
@@ -70,7 +106,7 @@ namespace student_attendance.Controllers
 
             ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day", attendance.schedule_id);
             ViewBag.student_id = new SelectList(db.Students, "student_id", "name", attendance.student_id);
-            return View(attendance);
+            return Index();
         }
 
         // GET: Attendances/Edit/5

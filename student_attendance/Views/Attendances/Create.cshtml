@@ -7,13 +7,135 @@
 <h2>Create</h2>
 
 
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
+@*using (Html.BeginForm())
+{*@ 
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        table {
+            margin: 20px 0 0 0;
+        }
+
+        tr th {
+            border: 1px solid black;
+        }
+
+        tr td {
+            border: 1px solid black;
+            padding: 8px 5px;
+        }
+    </style>
+
+    <script>
+        function reverseAll() {
+            let presentChecker = document.getElementsByClassName('present-checker');
+            for (let i = 0; i < presentChecker.length; i++) {
+                if (presentChecker[i].checked) {
+                    presentChecker[i].checked = false;
+                } else {
+                    presentChecker[i].checked = true;
+                }
+            }
+        }
+
+        let toggledChecked = false;
+        function toggleAll() {
+            let presentChecker = document.getElementsByClassName('present-checker');
+            if (!toggledChecked) {
+                for (let i = 0; i < presentChecker.length; i++) {
+                    presentChecker[i].checked = true;
+                }
+                toggledChecked = true;
+            } else {
+                for (let i = 0; i < presentChecker.length; i++) {
+                    presentChecker[i].checked = false;
+                }
+                toggledChecked = false;
+            }
+        }
+
+        function submitAttendance(e, el) {
+            let presentChecker = document.getElementsByClassName('present-checker');
+            for (let i = 0; i < presentChecker.length; i++) {
+                if (!presentChecker[i].checked) {
+                    presentChecker[i].checked = true;
+                    presentChecker[i].value = 0;
+                }
+            }
+
+            console.log($('form').serialize());
+
+            for (let i = 0; i < presentChecker.length; i++) {
+                presentChecker[i].checked = false;
+                presentChecker[i].value = 1;
+            }
+            return true;
+        }
+
+        window.addEventListener('load', function () {
+            $('form').submit(function (event) {
+                submitAttendance(event, $('this'));
+            });
+
+            document.getElementById('date_today').valueAsDate = new Date();
+            document.getElementById('date_today').setAttribute('max', new Date().toISOString().substr(0, 10));
+
+            var d = new Date(), h = d.getHours(), m = d.getMinutes();
+            if (h < 10) h = '0' + h;
+            if (m < 10) m = '0' + m;
+            document.getElementById('entry_time').value = h + ':' + m;
+        });
+    </script>
+
     <div class="form-horizontal">
         <h4>Attendance</h4>
         <hr />
+
+        @*<form action="~/Attendances/Create" method="POST">*@
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div style="display: flex;">
+                <button class="btn" onclick="reverseAll()">Reverse All</button>&nbsp;
+                <button class="btn" onclick="toggleAll()">Toggle All</button>&nbsp;
+                <input type="date" class="form-control" style="width: auto;" id="date_today" name="date" />&nbsp;
+                <input type="time" class="form-control" style="width: auto;" id="entry_time" name="entry_time" />&nbsp;
+                <input type="hidden" name="schedule_id" value="@ViewBag.get_schedule_id" />
+            </div>
+
+            <table class="table table-bordered table-hover">
+                <thead class="bg-primary">
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var std in ViewBag.rows)
+                    {
+                        <tr>
+                            <td>@std.name</td>
+                            <td>
+                                <div class="checkbox">
+                                    <label>
+                                        <input class="present-checker" type="checkbox" name="status" value="1">Present
+                                    </label>
+                                </div>
+                                <input type="hidden" name="student_id" value="@std.student_id">
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <input type="submit" value="Record Attendance" class="btn btn-success" />
+            @*</form>*@
+        }
+
+        @*<hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             @Html.LabelFor(model => model.date, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -60,8 +182,11 @@
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
+        *@
     </div>
-}
+@*}*@
+
+<br/>
 
 <div>
     @Html.ActionLink("Back to List", "Index")

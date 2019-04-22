@@ -1,57 +1,90 @@
 ﻿@model IEnumerable<student_attendance.Models.Attendance>
 
 @{
-    ViewBag.Title = "Index";
+                /**/
+
+                ViewBag.Title = "Index";
 }
 
 <h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.schedule_id_fk.day)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.student_id_fk.name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.date)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.entry_time)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.status)
-        </th>
-        <th></th>
-    </tr>
+<form action="~/Attendances/Create" method="GET">
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.schedule_id_fk.day)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.student_id_fk.name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.date)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.entry_time)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.status)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.attendance_id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.attendance_id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.attendance_id })
-        </td>
-    </tr>
-}
+    @*@Html.AntiForgeryToken()*@
 
-</table>
+    @*ViewBag.schedules.Length*@
+
+    <div style="display: flex;">
+        <select class="form-control" id="schedule_dropdown" name="schedule_id" onchange="this.form.submit();" required>
+            <option hidden value="" selected disabled>Select Schedule..</option>
+            @foreach (var sc in ViewBag.schedules)
+            {
+                foreach (var g in ViewBag.groups)
+                {
+                    if (g.group_id == sc.group_id)
+                    {
+                        foreach (var m in ViewBag.modules)
+                        {
+                            if (m.module_id == sc.group_id)
+                            {
+                                <option value="@(sc.schedule_id)">@(g.name) - @(m.module_name) - @(sc.class_type) - @(sc.room)</option>
+                            }
+                        }
+                    }
+                }
+            }
+        </select>
+        &nbsp;
+        <input type="submit" value="Open Attendance" class="btn btn-primary">
+    </div>
+
+    <br />
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.schedule_id_fk.day)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.student_id_fk.name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.entry_time)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.status)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.schedule_id_fk.day)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.student_id_fk.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.entry_time)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.status)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.attendance_id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.attendance_id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.attendance_id })
+                </td>
+            </tr>
+        }
+
+    </table>
+</form>
