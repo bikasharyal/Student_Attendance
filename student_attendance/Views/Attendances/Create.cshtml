@@ -68,10 +68,10 @@
 
             console.log($('form').serialize());
 
-            for (let i = 0; i < presentChecker.length; i++) {
+            /*for (let i = 0; i < presentChecker.length; i++) {
                 presentChecker[i].checked = false;
                 presentChecker[i].value = 1;
-            }
+            }*/
             return true;
         }
 
@@ -94,9 +94,9 @@
         <h4>Attendance</h4>
         <hr />
 
-        @*<form action="~/Attendances/Create" method="POST">*@
-        @using (Html.BeginForm())
-        {
+        <form action="~/Attendances/Create" method="POST">
+            @*@using (Html.BeginForm())
+            {*@
             @Html.AntiForgeryToken()
             <div style="display: flex;">
                 <button class="btn" onclick="reverseAll()">Reverse All</button>&nbsp;
@@ -132,8 +132,8 @@
             </table>
 
             <input type="submit" value="Record Attendance" class="btn btn-success" />
-            @*</form>*@
-        }
+        </form>
+        @*}*@
 
         @*<hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })

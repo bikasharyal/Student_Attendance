@@ -75,15 +75,18 @@ namespace student_attendance.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "attendance_id,date,entry_time,status,student_id,schedule_id")] Attendance attendance)
+        public ActionResult Create(Attendance attendance)
         {
+            Response.Write(Request.Form.GetValues("student_id")[0] + "<br/>");
+            Response.Write(Request.Form.GetValues("status")[0] + "<br/>");
+            Response.Write(Request.Form.GetValues("student_id")[1] + "<br/>");
+            Response.Write(Request.Form.GetValues("status")[1] + "<br/>");
+
             Response.Write("date " + attendance.date + "<br/>");
             Response.Write("entry_time " + attendance.entry_time + "<br/>");
             Response.Write("status (array)" + attendance.status + "<br/>");
             Response.Write("student_id (array)" + attendance.student_id + "<br/>");
             Response.Write("schedule_id" + attendance.schedule_id + "<br/>");
-
-            Response.Write(attendance.student_id.GetType());
             /*String[] allStatus = Request.Form.GetValues("status");
             String[] allStudentId = Request.Form.GetValues("student_id");
 
