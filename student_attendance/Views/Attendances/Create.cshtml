@@ -80,7 +80,15 @@
                 submitAttendance(event, $('this'));
             });
 
-            document.getElementById('date_today').valueAsDate = new Date();
+            @if (ViewBag.date_for == null || ViewBag.date_for == DateTime.MinValue)
+            {
+                @:document.getElementById('date_today').valueAsDate = new Date();
+            }
+            else
+            {
+                @:document.getElementById('date_today').value = "@(ViewBag.date_for.ToString("yyyy-MM-dd"))";
+            }
+            
             document.getElementById('date_today').setAttribute('max', new Date().toISOString().substr(0, 10));
 
             var d = new Date(), h = d.getHours(), m = d.getMinutes();
@@ -222,7 +230,7 @@
 <br/>
 
 <div>
-    @Html.ActionLink("Back to List", "Index", new { schedule_id = ViewBag.get_schedule_id })
+    @Html.ActionLink("Back to List", "Index", new { schedule_id = ViewBag.get_schedule_id, date = Request.QueryString["select_date"] })
 </div>
 
 @section Scripts {

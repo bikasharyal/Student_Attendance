@@ -40,26 +40,11 @@
                     @(sc.course_id_fk.name) - @(sc.module_id_fk.module_name) - @(sc.class_type) - @(sc.room)
                 </option>
             }
-
-                @*foreach (var g in ViewBag.groups)
-                {
-                    if (g.group_id == sc.group_id)
-                    {
-                        foreach (var m in ViewBag.modules)
-                        {
-                            if (m.module_id == sc.group_id)
-                            {
-                                <option @if (ViewBag.schedule_id == sc.schedule_id) { @: selected
-                                        } value="@(sc.schedule_id)">
-                                    @(g.name) - @(m.module_name) - @(sc.class_type) - @(sc.room)
-                                </option>
-                            }
-                        }
-                    }
-                }*@
         </select>
         &nbsp;
-        <a href="#" onclick="location.href = '/Attendances?schedule_id=' + document.getElementById('schedule_dropdown').value" class="btn btn-success">View Attendance</a>
+        <input style="width: auto;" type="date" id="select_date" name="select_date" class="form-control"/>
+        &nbsp;
+        <a href="#" onclick="location.href = '/Attendances?schedule_id=' + document.getElementById('schedule_dropdown').value + '&date=' + document.getElementById('select_date').value" class="btn btn-success">View Attendance</a>
         &nbsp;
         <input type="submit" value="New Attendance" class="btn btn-primary">
     </div>
@@ -150,3 +135,14 @@
         </table>
     }
 </form>
+
+<script>
+    @if (ViewBag.date == null || ViewBag.date == DateTime.MinValue)
+    {
+        @:document.getElementById('select_date').valueAsDate = new Date();
+    }
+    else
+    {
+        @:document.getElementById('select_date').value = "@(ViewBag.date.ToString("yyyy-MM-dd"))";
+    }
+</script>

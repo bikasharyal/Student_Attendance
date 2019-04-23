@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -20,16 +21,25 @@ namespace student_attendance.Controllers
         {
             IQueryable<Attendance> attendances;
             int id;
+            DateTime date;
 
-            if (Request.QueryString["schedule_id"] == null || Request.QueryString["schedule_id"] == "")
+            if(Request.QueryString["schedule_id"] == "" || Request.QueryString["date"] == "")
             {
-                attendances = db.Attendances.Include(a => a.schedule_id_fk).Include(a => a.student_id_fk).OrderByDescending(a => a.date).Take(0);
+                TempData["error"] = "Schedule Id or Date was Invalid";
+            }
+
+            if (Request.QueryString["schedule_id"] == null || Request.QueryString["schedule_id"] == "" || Request.QueryString["date"] == null || Request.QueryString["date"] == "")
+            {
+                //attendances = db.Attendances.Include(a => a.schedule_id_fk).Include(a => a.student_id_fk).OrderByDescending(a => a.date).Take(0);
+                attendances = Enumerable.Empty<Attendance>().AsQueryable();
             }
             else
             {
                 id = Convert.ToInt32(Request.QueryString["schedule_id"]);
-                attendances = db.Attendances.Include(a => a.schedule_id_fk).Include(a => a.student_id_fk).Where(a => a.schedule_id == id).OrderByDescending(a => a.date);
+                date = DateTime.ParseExact(Request.QueryString["date"], "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                attendances = db.Attendances.Include(a => a.schedule_id_fk).Include(a => a.student_id_fk).Where(a => a.schedule_id == id).Where(a => a.date == date).OrderBy(a => a.student_id_fk.name);
                 ViewBag.schedule_id = id;
+                ViewBag.date = date;
             }
 
             //ViewBag.schedules = db.Schedules.SqlQuery("SELECT * from schedules INNER JOIN groups INNER JOIN modules").ToList().ToArray();
@@ -66,13 +76,31 @@ namespace student_attendance.Controllers
         {
             if (Request.QueryString["schedule_id"] != null)
             {
+                int schedule_id_for = Convert.ToInt32(Request.QueryString["schedule_id"]);
+                if (Request.QueryString["select_date"] != null && Request.QueryString["select_date"] != "")
+                {
+                    DateTime date_for = DateTime.ParseExact(Request.QueryString["select_date"], "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    ViewBag.date_for = date_for;
+                }
+                else
+                {
+                    DateTime date_for = DateTime.ParseExact(DateTime.Today.ToShortDateString(), "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    ViewBag.date_for = date_for;
+                }
                 ViewBag.get_schedule_id = Request.QueryString["schedule_id"];
                 ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day");
                 ViewBag.student_id = new SelectList(db.Students, "student_id", "name");
-                var rows = db.Students.SqlQuery("SELECT * from students").ToList().ToArray();
+                //var rows = db.Students.SqlQuery("SELECT * from students").ToList().ToArray();
+                var rows = (from s in db.Students
+                            join g in db.Groups on s.group_id equals g.group_id
+                            join sc in db.Schedules on g.group_id equals sc.group_id
+                            where sc.schedule_id == schedule_id_for
+                            orderby s.name
+                            select s).ToList().ToArray();
                 ViewBag.rows = rows;
 
-                var rows_sc = db.Schedules.SqlQuery("SELECT * from schedules, modules, groups where schedule_id='" + Request.QueryString["schedule_id"] + "'").ToList().ToArray();
+                var rows_sc = db.Schedules.SqlQuery("SELECT * from schedules where schedule_id='" + Request.QueryString["schedule_id"] + "'").ToList().ToArray();
+                
                 ViewBag.rows_sc = rows_sc;
 
                 return View();
@@ -93,7 +121,7 @@ namespace student_attendance.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Attendance attendance)
         {
-            var attendance_already = db.Attendances.SqlQuery("SELECT * from attendances where date = '" + attendance.date + "'").ToList().ToArray();
+            var attendance_already = db.Attendances.SqlQuery("SELECT * from attendances where date = '" + attendance.date + "' and schedule_id = '" + attendance.schedule_id + "'").ToList().ToArray();
             if (attendance_already.Length == 0)
             {
 
@@ -106,6 +134,14 @@ namespace student_attendance.Controllers
                 /*Response.Write(Request.Form.GetValues("student_id")[0] + "<br/>");
                 Response.Write(Request.Form.GetValues("status")[0] + "<br/>");
                 Response.Write("schedule_id" + attendance.schedule_id + "<br/>");*/
+
+                if(allStatus == null || allStatus.Length <= 0)
+                {
+                    TempData["message"] = "Attendance for Zero Students. Epic.";
+
+                    ViewBag.schedule_id = attendance.schedule_id;
+                    return RedirectToAction("Index", new { schedule_id = attendance.schedule_id });
+                }
 
                 int i = 0;
                 foreach (string stat in allStatus)
@@ -140,12 +176,12 @@ namespace student_attendance.Controllers
                 TempData["message"] = "Attendance Recorded Successfully";
 
                 ViewBag.schedule_id = attendance.schedule_id;
-                return RedirectToAction("Index", new { schedule_id = attendance.schedule_id });
+                return RedirectToAction("Index", new { schedule_id = attendance.schedule_id, date = attendance.date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) });
             }
             else
             {
                 TempData["error"] = "Attendance Was Already Taken for Selected Date - " + attendance.date.ToShortDateString();
-                return RedirectToAction("Create", new { schedule_id = attendance.schedule_id});
+                return RedirectToAction("Create", new { schedule_id = attendance.schedule_id, select_date = attendance.date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) });
             }
             /*if (ModelState.IsValid)
             {
