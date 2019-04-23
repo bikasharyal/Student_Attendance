@@ -1,16 +1,20 @@
 ﻿@model student_attendance.Models.Attendance
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Delete Attendance";
 }
 
-<h2>Delete</h2>
+<style>
+
+</style>
+
+<h2>Delete Attendance</h2>
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
     <h4>Attendance</h4>
     <hr />
-    <dl class="dl-horizontal">
+    <dl class="dl-horizontal" style="border: 1px solid #DEDEDE; box-shadow: 1px 1px 0 1px #DEDEDE; display: inline-block;padding: 5px 20px;">
         <dt>
             @Html.DisplayNameFor(model => model.schedule_id_fk.day)
         </dt>
@@ -32,7 +36,7 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.date)
+            @Model.date.ToShortDateString()
         </dd>
 
         <dt>
@@ -40,15 +44,22 @@
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.entry_time)
+            @Model.entry_time.ToShortTimeString()
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.status)
+            Status
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.status)
+            @if (Model.status == "1")
+            {<text>Present</text>}
+            else if (Model.status == "2")
+            {<text>Late</text>}
+            else
+            { <text>Absent</text>}
+
+            @*@Html.DisplayFor(model => model.status)*@
         </dd>
 
     </dl>
@@ -57,8 +68,8 @@
         @Html.AntiForgeryToken()
 
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+            <input type="submit" value="Delete" class="btn btn-danger" /> |
+            @Html.ActionLink("Back to List", "Index", new { id = "reject" }, new { @class = "btn btn-primary" })
         </div>
     }
 </div>

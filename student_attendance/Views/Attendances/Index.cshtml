@@ -1,12 +1,28 @@
 ﻿@model IEnumerable<student_attendance.Models.Attendance>
 
 @{
-                /**/
+    /**/
 
-                ViewBag.Title = "Index";
+    ViewBag.Title = "Manage Attendance";
 }
 
-<h2>Index</h2>
+<h2>Manage Attendance</h2>
+
+@if (TempData["message"] != null)
+{
+<div class="alert alert-success alert-dismissible" style="display: inline-block;margin: 0 0 10px 0;">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>@TempData["message"]</strong>
+</div>
+}
+
+@if (TempData["error"] != null)
+{
+<div class="alert alert-warning alert-dismissible" style="display: inline-block;margin: 0 0 10px 0;">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    <strong>@TempData["error"]</strong>
+</div>
+}
 
 <form action="~/Attendances/Create" method="GET">
 
@@ -15,11 +31,17 @@
     @*ViewBag.schedules.Length*@
 
     <div style="display: flex;">
-        <select class="form-control" id="schedule_dropdown" name="schedule_id" onchange="this.form.submit();" required>
+        <select class="form-control" id="schedule_dropdown" name="schedule_id" onchange="//this.form.submit();" required>
             <option hidden value="" selected disabled>Select Schedule..</option>
             @foreach (var sc in ViewBag.schedules)
             {
-                foreach (var g in ViewBag.groups)
+                <option @if (ViewBag.schedule_id == sc.schedule_id) { @: selected
+                        } value="@(sc.schedule_id)">
+                    @(sc.course_id_fk.name) - @(sc.module_id_fk.module_name) - @(sc.class_type) - @(sc.room)
+                </option>
+            }
+
+                @*foreach (var g in ViewBag.groups)
                 {
                     if (g.group_id == sc.group_id)
                     {
@@ -27,64 +49,104 @@
                         {
                             if (m.module_id == sc.group_id)
                             {
-                                <option value="@(sc.schedule_id)">@(g.name) - @(m.module_name) - @(sc.class_type) - @(sc.room)</option>
+                                <option @if (ViewBag.schedule_id == sc.schedule_id) { @: selected
+                                        } value="@(sc.schedule_id)">
+                                    @(g.name) - @(m.module_name) - @(sc.class_type) - @(sc.room)
+                                </option>
                             }
                         }
                     }
-                }
-            }
+                }*@
         </select>
         &nbsp;
-        <input type="submit" value="Open Attendance" class="btn btn-primary">
+        <a href="#" onclick="location.href = '/Attendances?schedule_id=' + document.getElementById('schedule_dropdown').value" class="btn btn-success">View Attendance</a>
+        &nbsp;
+        <input type="submit" value="New Attendance" class="btn btn-primary">
     </div>
 
     <br />
 
-    <table class="table">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.schedule_id_fk.day)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.student_id_fk.name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.entry_time)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.status)
-            </th>
-            <th></th>
-        </tr>
-
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.schedule_id_fk.day)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.student_id_fk.name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.date)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.entry_time)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.status)
-                </td>
-                <td>
-                    @Html.ActionLink("Edit", "Edit", new { id = item.attendance_id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.attendance_id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.attendance_id })
-                </td>
+    @if (Model.ToList().ToArray().Length <= 0)
+    {
+        <br />
+        <h2 class="text-center"><b>Not Attendance To Show !!</b></h2>
+        <br />
+        <h4 class="text-center"><b>Select Schedule or Take New Attendance</b></h4>
+        <br />
+    }
+    else
+    {
+        <table class="table table-hover">
+            <tr class="bg-info">
+                <th>
+                    @Html.DisplayNameFor(model => model.schedule_id_fk.day)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.schedule_id_fk.module_id_fk.module_name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.schedule_id_fk.class_type)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.schedule_id_fk.course_id_fk.name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.student_id_fk.name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.entry_time)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.status)
+                </th>
+                <th></th>
             </tr>
-        }
 
-    </table>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.schedule_id_fk.day)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.schedule_id_fk.module_id_fk.module_name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.schedule_id_fk.class_type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.schedule_id_fk.course_id_fk.name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.student_id_fk.name)
+                    </td>
+                    <td>
+                        @item.date.ToShortDateString()
+                    </td>
+                    <td>
+                        @item.entry_time.ToShortTimeString()
+                    </td>
+                    <td>
+                        @if (item.status == "1")
+                        {<text>Present</text>}
+                    else if (item.status == "2")
+                    {<text>Late</text>}
+                else
+                { <text>Absent</text>}
+
+                        @*@Html.DisplayFor(modelItem => item.status == "1" ? "Present" : "Absent")*@
+                    </td>
+                    <td>
+                        @Html.ActionLink("Edit", "Edit", new { id = item.attendance_id }) |
+                        @*@Html.ActionLink("Details", "Details", new { id = item.attendance_id }) |*@
+                        @Html.ActionLink("Delete", "Delete", new { id = item.attendance_id })
+                    </td>
+                </tr>
+            }
+
+        </table>
+    }
 </form>

@@ -1,10 +1,10 @@
 ﻿@model student_attendance.Models.Attendance
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Make Attendance";
 }
 
-<h2>Create</h2>
+<h2>Make Attendance</h2>
 
 
 @*using (Html.BeginForm())
@@ -94,19 +94,52 @@
         <h4>Attendance</h4>
         <hr />
 
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible" style="display: inline-block;margin: 0 0 10px 0;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>@TempData["message"]</strong>
+            </div>
+        }
+
+        @if (TempData["error"] != null)
+        {
+            <div class="alert alert-warning alert-dismissible" style="display: inline-block;margin: 0 0 10px 0;">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>@TempData["error"]</strong>
+            </div>
+        }
+
         <form action="~/Attendances/Create" method="POST">
             @*@using (Html.BeginForm())
             {*@
             @Html.AntiForgeryToken()
+            <small style="padding-bottom: 10px; display: inline-block;">
+                @foreach (var std in ViewBag.rows_sc)
+                {
+                    @: <b>Room: </b> @std.room |
+                    @: <b>Day: </b> @std.day |
+                    @: <b>Class Type: </b> @std.class_type
+                    @: <br />
+                    @: <b>Start Time: </b> @std.start_time.ToShortTimeString() |
+                    @: <b>End Time: </b> @std.end_time.ToShortTimeString()
+                    @: <br />
+                    @: <span style="font-size: 1.3em"><b>Module Name: </b> @std.module_id_fk.module_name |</span>
+                    @: <span style="font-size: 1.3em"><b>Group: </b> @std.course_id_fk.name</span>
+                    break;
+                }
+
+            </small>
+
             <div style="display: flex;">
-                <button class="btn" onclick="reverseAll()">Reverse All</button>&nbsp;
-                <button class="btn" onclick="toggleAll()">Toggle All</button>&nbsp;
+                <a class="btn btn-info" onclick="reverseAll()">Reverse All</a>&nbsp;
+                <a class="btn btn-info" onclick="toggleAll()">Toggle All</a>&nbsp;
                 <input type="date" class="form-control" style="width: auto;" id="date_today" name="date" />&nbsp;
                 <input type="time" class="form-control" style="width: auto;" id="entry_time" name="entry_time" />&nbsp;
                 <input type="hidden" name="schedule_id" value="@ViewBag.get_schedule_id" />
             </div>
 
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered table-hover" style="width: auto;min-width: 300px;">
                 <thead class="bg-primary">
                     <tr>
                         <th>Name</th>
@@ -189,7 +222,7 @@
 <br/>
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to List", "Index", new { schedule_id = ViewBag.get_schedule_id })
 </div>
 
 @section Scripts {

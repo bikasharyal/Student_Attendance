@@ -18,15 +18,31 @@ namespace student_attendance.Controllers
         // GET: Attendances
         public ActionResult Index()
         {
-            var attendances = db.Attendances.Include(a => a.schedule_id_fk).Include(a => a.student_id_fk);
-            //ViewBag.schedules = db.Schedules.SqlQuery("SELECT * from schedules INNER JOIN groups ON groups.group_id = schedules.group_id").ToList();
-            ViewBag.schedules = db.Schedules.SqlQuery("SELECT * from schedules").ToList();
-            ViewBag.groups = db.Groups.SqlQuery("SELECT * from groups").ToList();
-            ViewBag.modules = db.Modules.SqlQuery("SELECT * from modules").ToList();
-            /*ViewBag.schedules = (from schedules in db.Schedules
-                                 join groups in db.Groups on schedules.group_id equals groups.group_id
-                                 join modules in db.Modules on schedules.module_id equals modules.module_id
-                                 select groups.name).ToList().ToArray();*/
+            IQueryable<Attendance> attendances;
+            int id;
+
+            if (Request.QueryString["schedule_id"] == null || Request.QueryString["schedule_id"] == "")
+            {
+                attendances = db.Attendances.Include(a => a.schedule_id_fk).Include(a => a.student_id_fk).OrderByDescending(a => a.date).Take(0);
+            }
+            else
+            {
+                id = Convert.ToInt32(Request.QueryString["schedule_id"]);
+                attendances = db.Attendances.Include(a => a.schedule_id_fk).Include(a => a.student_id_fk).Where(a => a.schedule_id == id).OrderByDescending(a => a.date);
+                ViewBag.schedule_id = id;
+            }
+
+            //ViewBag.schedules = db.Schedules.SqlQuery("SELECT * from schedules INNER JOIN groups INNER JOIN modules").ToList().ToArray();
+            ViewBag.schedules = (from s in db.Schedules
+                                 join g in db.Groups on s.group_id equals g.group_id
+                                 join m in db.Modules on s.module_id equals m.module_id
+                                 orderby g.name
+                                 orderby m.module_name
+                                 orderby s.class_type
+                                 select s).ToList().ToArray();
+
+            /*ViewBag.groups = db.Groups.SqlQuery("SELECT * from groups").ToList();
+            ViewBag.modules = db.Modules.SqlQuery("SELECT * from modules").ToList();*/
             return View(attendances.ToList());
         }
 
@@ -56,17 +72,17 @@ namespace student_attendance.Controllers
                 var rows = db.Students.SqlQuery("SELECT * from students").ToList().ToArray();
                 ViewBag.rows = rows;
 
-                /*foreach(var a in rows)
-                {
-                    Response.Write(a.name);
-                }*/
+                var rows_sc = db.Schedules.SqlQuery("SELECT * from schedules, modules, groups where schedule_id='" + Request.QueryString["schedule_id"] + "'").ToList().ToArray();
+                ViewBag.rows_sc = rows_sc;
 
                 return View();
             }
             else
             {
-                Response.Write("Missing Schedule Id.....Redirecting Back..<script>setTimeout(function(){location.href='/Attendances'}, 1000);</script>");
-                return null;
+                //Response.Write("Missing Schedule Id.....Redirecting Back..<script>setTimeout(function(){location.href='/Attendances'}, 1000);</script>");
+                //return null;
+                TempData["error"] = "Schedule Id not Provided.";
+                return RedirectToAction("Index");
             }
         }
 
@@ -77,30 +93,61 @@ namespace student_attendance.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Attendance attendance)
         {
-            Response.Write(Request.Form.GetValues("student_id")[0] + "<br/>");
-            Response.Write(Request.Form.GetValues("status")[0] + "<br/>");
-            Response.Write(Request.Form.GetValues("student_id")[1] + "<br/>");
-            Response.Write(Request.Form.GetValues("status")[1] + "<br/>");
-
-            Response.Write("date " + attendance.date + "<br/>");
-            Response.Write("entry_time " + attendance.entry_time + "<br/>");
-            Response.Write("status (array)" + attendance.status + "<br/>");
-            Response.Write("student_id (array)" + attendance.student_id + "<br/>");
-            Response.Write("schedule_id" + attendance.schedule_id + "<br/>");
-            /*String[] allStatus = Request.Form.GetValues("status");
-            String[] allStudentId = Request.Form.GetValues("student_id");
-
-            int i = 0;
-            foreach(string status in allStatus)
+            var attendance_already = db.Attendances.SqlQuery("SELECT * from attendances where date = '" + attendance.date + "'").ToList().ToArray();
+            if (attendance_already.Length == 0)
             {
-                Response.Write("Status: " + status + " - of: " + allStudentId[i] + "<br/>");
-                i++;
-            }*/
-            
 
-            return null;
+                var schedule_info = db.Schedules.SqlQuery("SELECT * from schedules where schedule_id = '" + attendance.schedule_id + "'").ToList().ToArray();
+                DateTime start_time = schedule_info[0].start_time;
 
-            if (ModelState.IsValid)
+                String[] allStatus = Request.Form.GetValues("status");
+                String[] allStudentId = Request.Form.GetValues("student_id");
+
+                /*Response.Write(Request.Form.GetValues("student_id")[0] + "<br/>");
+                Response.Write(Request.Form.GetValues("status")[0] + "<br/>");
+                Response.Write("schedule_id" + attendance.schedule_id + "<br/>");*/
+
+                int i = 0;
+                foreach (string stat in allStatus)
+                {
+                    DateTime entry_time = attendance.entry_time;
+
+                    var stat_verified = "0";
+                    if (stat != "0")
+                    {
+                        if ((entry_time.TimeOfDay - start_time.TimeOfDay).TotalMinutes <= 15)
+                        {
+                            stat_verified = "1";
+                        }
+                        else
+                        {
+                            stat_verified = "2";
+                        }
+                    }
+
+                    db.Attendances.Add(new Attendance
+                    {
+                        date = attendance.date,
+                        entry_time = attendance.entry_time,
+                        status = stat_verified,
+                        student_id = Convert.ToInt32(allStudentId[i]),
+                        schedule_id = attendance.schedule_id
+                    });
+                    db.SaveChanges();
+                    i++;
+                }
+
+                TempData["message"] = "Attendance Recorded Successfully";
+
+                ViewBag.schedule_id = attendance.schedule_id;
+                return RedirectToAction("Index", new { schedule_id = attendance.schedule_id });
+            }
+            else
+            {
+                TempData["error"] = "Attendance Was Already Taken for Selected Date - " + attendance.date.ToShortDateString();
+                return RedirectToAction("Create", new { schedule_id = attendance.schedule_id});
+            }
+            /*if (ModelState.IsValid)
             {
                 db.Attendances.Add(attendance);
                 db.SaveChanges();
@@ -109,7 +156,7 @@ namespace student_attendance.Controllers
 
             ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day", attendance.schedule_id);
             ViewBag.student_id = new SelectList(db.Students, "student_id", "name", attendance.student_id);
-            return Index();
+            return Index();*/
         }
 
         // GET: Attendances/Edit/5
@@ -120,12 +167,16 @@ namespace student_attendance.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Attendance attendance = db.Attendances.Find(id);
+            Schedule schedule = db.Schedules.Find(attendance.schedule_id);
+
             if (attendance == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "day", attendance.schedule_id);
+            ViewBag.schedule_id = new SelectList(db.Schedules, "schedule_id", "course_id_fk.name", attendance.schedule_id);
             ViewBag.student_id = new SelectList(db.Students, "student_id", "name", attendance.student_id);
+            //ViewBag.schedules = db.Schedules.SqlQuery("SELECT * from schedules").ToList();
+
             return View(attendance);
         }
 
